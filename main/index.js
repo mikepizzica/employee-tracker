@@ -1,6 +1,6 @@
 const inquirer = require('inquirer');
 const connection = require('./db/connection.js');
-const table = require("console.table");
+const db = require("console.table");
 const { connect } = require('./db/connection.js');
 
 function choice(){
@@ -78,15 +78,13 @@ function adddepartment(){
 }
 
 function addrole(){
-  var choices = [];
-  connection.query("SELECT id, name FROM department", function(err, data){
-    if(err) throw err;
-    choices = data.map((department) => {
-      return { name: department.name, value: department.id }
-    })
-  })
-
-  console.log(choices);
+  db.findAllDepartments()
+    .then(([rows]) => {
+      let departments = rows;
+      const departmentChoices = departments.map(({ id,name }) => ({
+        name: name,
+        value: id
+      }));
 
   inquirer.prompt([
     {
@@ -102,19 +100,32 @@ function addrole(){
     {
       type: 'list',
       message: 'Which department does the role belong to?',
-      name: 'department',
-      choices: choices
+      name: 'department_id',
+      choices: departmentChoices
     }
   ])
-  .then((response) => {
-    console.log(response.name);
-    console.log(response.salary);
-    console.log(response.department);
-    connection.query(`INSERT INTO role (title, salary, department_id) VALUES ("${response.name}", ${response.salary}, "${response.department}")`,
-    function(err, data){
-      if(err) throw err;
-      console.log(`Added ${response.name} to the database`);
-      choice();
+    .then(role => {
+      db.createRole(role)
+        .then(() => console.log(`Added ${role.title} to the database`))
+        .then(() => choices())
     })
   })
 }
+
+createRole(role) {
+  return this.connection.promise().query("INSERT INTO role SET ?", role);
+}
+
+
+//   .then((response) => {
+//     console.log(response.name);
+//     console.log(response.salary);
+//     console.log(response.department);
+//     connection.query(`INSERT INTO role (title, salary, department_id) VALUES ("${response.name}", ${response.salary}, "${response.department}")`,
+//     function(err, data){
+//       if(err) throw err;
+//       console.log(`Added ${response.name} to the database`);
+//       choice();
+//     })
+//   })
+// }
