@@ -78,6 +78,16 @@ function adddepartment(){
 }
 
 function addrole(){
+  var choices = [];
+  connection.query("SELECT id, name FROM department", function(err, data){
+    if(err) throw err;
+    choices = data.map((department) => {
+      return { name: department.name, value: department.id }
+    })
+  })
+
+  console.log(choices);
+
   inquirer.prompt([
     {
       type: 'input',
@@ -93,7 +103,7 @@ function addrole(){
       type: 'list',
       message: 'Which department does the role belong to?',
       name: 'department',
-      choices: []
+      choices: choices
     }
   ])
   .then((response) => {
