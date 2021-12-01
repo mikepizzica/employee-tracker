@@ -1,9 +1,18 @@
 const inquirer = require('inquirer');
 const connection = require('./db/connection.js');
-const db = require("console.table");
-const { connect } = require('./db/connection.js');
+const db = require ('./db/queries.js');
 
-function choice(){
+let departments = [];
+let employees = [];
+let roles = [];
+
+choice = () =>{
+db.findDepartments().then((rows) =>{
+  rows.forEach(department => {
+    departments.push(department.department_name);
+  });
+})
+
   inquirer
     .prompt([
       {
@@ -78,19 +87,11 @@ function adddepartment(){
 }
 
 function addrole(){
-  db.findAllDepartments()
-    .then(([rows]) => {
-      let departments = rows;
-      const departmentChoices = departments.map(({ id,name }) => ({
-        name: name,
-        value: id
-      }));
-
   inquirer.prompt([
     {
       type: 'input',
       message: 'What is the name of the role?',
-      name: 'name'
+      name: 'roleName'
     },
     {
       type: 'input',
@@ -100,32 +101,19 @@ function addrole(){
     {
       type: 'list',
       message: 'Which department does the role belong to?',
-      name: 'department_id',
-      choices: departmentChoices
+      name: 'roleDepartment',
+      choices: departments
     }
   ])
-    .then(role => {
-      db.createRole(role)
-        .then(() => console.log(`Added ${role.title} to the database`))
-        .then(() => choices())
+  .then((response) => {
+    console.log(response.name)
+    console.log(response.salary)
+    console.log(response.departments)
+    connection.query(`INSERT INTO role VALUES ("${response.roleName}", ${response.salary}, "${response.roleDepartment}")`,
+    function(err, data){
+      if(err) throw err;
+      console.log(`Added ${response.name} to the database`);
+      choice();
     })
   })
 }
-
-createRole(role) {
-  return this.connection.promise().query("INSERT INTO role SET ?", role);
-}
-
-
-//   .then((response) => {
-//     console.log(response.name);
-//     console.log(response.salary);
-//     console.log(response.department);
-//     connection.query(`INSERT INTO role (title, salary, department_id) VALUES ("${response.name}", ${response.salary}, "${response.department}")`,
-//     function(err, data){
-//       if(err) throw err;
-//       console.log(`Added ${response.name} to the database`);
-//       choice();
-//     })
-//   })
-// }
