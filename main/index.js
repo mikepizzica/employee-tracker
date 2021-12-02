@@ -1,18 +1,7 @@
 const inquirer = require('inquirer');
 const connection = require('./db/connection.js');
-const db = require ('./db/queries.js');
-
-let departments = [];
-let employees = [];
-let roles = [];
 
 choice = () =>{
-db.findDepartments().then((rows) =>{
-  rows.forEach(department => {
-    departments.push(department.department_name);
-  });
-})
-
   inquirer
     .prompt([
       {
@@ -109,7 +98,7 @@ function addrole(){
     console.log(response.name)
     console.log(response.salary)
     console.log(response.departments)
-    connection.query(`INSERT INTO role VALUES ("${response.roleName}", ${response.salary}, "${response.roleDepartment}")`,
+    connection.query(`INSERT INTO role (title, salary, department_id) VALUES ("${response.roleName}", ${response.salary}, "${response.roleDepartment}")`,
     function(err, data){
       if(err) throw err;
       console.log(`Added ${response.name} to the database`);
