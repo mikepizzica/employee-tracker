@@ -1,5 +1,6 @@
 const inquirer = require('inquirer');
 const connection = require('./db/connection.js');
+const cTable = require('console.table');
 
 choice = () => {
   inquirer
@@ -46,7 +47,7 @@ function viewdepartments() {
 }
 
 function viewroles() {
-  connection.query("SELECT * FROM role", function (err, data) {
+  connection.query("SELECT role.id, role.title, role.salary, department.name FROM role INNER JOIN department ON role.department_id=department.id", function (err, data) {
     if (err) throw err;
     console.table(data);
     choice();
@@ -54,7 +55,7 @@ function viewroles() {
 }
 
 function viewemployees() {
-  connection.query("SELECT * FROM employee", function (err, data) {
+  connection.query("SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, employee.manager_id FROM employee INNER JOIN role ON employee.role_id=role.id INNER JOIN department ON role.department_id=department.id", function (err, data) {
     if (err) throw err;
     console.table(data);
     choice();
