@@ -71,7 +71,6 @@ function adddepartment() {
     }
   ])
     .then((response) => {
-      console.log(response.name);
       connection.query(`INSERT INTO department (name) VALUES ("${response.name}")`,
         function (err, data) {
           if (err) throw err;
@@ -84,12 +83,10 @@ function adddepartment() {
 function addrole() {
   connection.query("SELECT * FROM department", function (err, data) {
     if (err) throw err;
-    console.log(data);
     var departments = data.map(department => ({
       name: department.name,
       value: department.id
     }));
-    console.log(departments)
     inquirer.prompt([
       {
         type: 'input',
@@ -109,9 +106,6 @@ function addrole() {
       }
     ])
       .then((response) => {
-        console.log(response.roleName)
-        console.log(response.salary)
-        console.log(response.roleDepartment)
         connection.query(`INSERT INTO role (title, salary, department_id) VALUES ("${response.roleName}", ${response.salary}, "${response.roleDepartment}")`,
           function (err, data) {
             if (err) throw err;
@@ -132,12 +126,10 @@ function addemployee() {
 
     connection.query("SELECT * FROM employee", function (err, data) {
       if (err) throw err;
-      console.log(data);
       var employees = data.map(employee => ({
         name: employee.first_name + " " + employee.last_name,
         value: employee.id
       }));
-      console.log(employees)
 
       inquirer.prompt([
         {
@@ -164,7 +156,6 @@ function addemployee() {
         }
       ])
         .then((response) => {
-          console.log(response);
           connection.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${response.firstName}", "${response.lastName}", ${response.role}, ${response.manager})`,
           function(err, data){
             if(err) throw err;
@@ -186,12 +177,10 @@ function updateemployeerole() {
 
     connection.query("SELECT * FROM employee", function (err, data) {
       if (err) throw err;
-      console.log(data);
       var employees = data.map(employee => ({
         name: employee.first_name + " " + employee.last_name,
         value: employee.id
       }));
-      console.log(employees)
 
       inquirer.prompt([
         {
@@ -208,7 +197,6 @@ function updateemployeerole() {
         }
       ])
         .then((response) => {
-          console.log(response);
           connection.query(`UPDATE employee SET role_id = ${response.role} WHERE id = ${response.employee}`,
           function(err, data){
             if(err) throw err;

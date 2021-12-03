@@ -9,7 +9,6 @@ I WANT to be able to view and manage the departments, roles, and employees in my
 SO THAT I can organize and plan my business
 ```
 
-
 ## Acceptance Criteria
 ```md
 GIVEN a command-line application that accepts user input
@@ -31,7 +30,5 @@ WHEN I choose to update an employee role
 THEN I am prompted to select an employee to update and their new role and this information is updated in the database 
 ```
 
-
 ## Links
-[Walkthrough video](link to walkthrough video)  
-[Sample index.html from walkthrough](link to sample)  
+[Walkthrough video](https://drive.google.com/file/d/15IePkuZMLfnvYQ1dBSx3gdUUhaXiEETn/view?usp=sharing)  
